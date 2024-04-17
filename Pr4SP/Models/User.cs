@@ -17,6 +17,3 @@ public partial class User
 
     public virtual ICollection<Transport> Transports { get; set; } = new List<Transport>();
     }
-User userrr = new User();
-userrr.UserId = 1;
-userrr.FirstName = "test";
