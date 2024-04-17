@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,18 @@ namespace Pr4SP.Controllers
         }
 
         // GET: api/Transport
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transport>>> GetTransports()
         {
             return await _context.Transports.ToListAsync();
         }
-
-        // GET: api/Transport/5
+        /// <summary>
+        /// Поиск по айди
+        /// </summary>
+        /// <param name="id">Поиск по id</param>
+        /// <returns></returns>
+        // GET ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Transport>> GetTransport(int id)
         {
@@ -42,6 +48,12 @@ namespace Pr4SP.Controllers
             return transport;
         }
 
+        // GET CODE
+        /// <summary>
+        /// Поиск по коду
+        /// </summary>
+        /// <param name="code">Поиск по коду</param>
+        /// <returns></returns>
         [HttpGet("cd/{code}")]
         public async Task<ActionResult<Transport>> GetTransportCode(int code)
         {
@@ -50,6 +62,12 @@ namespace Pr4SP.Controllers
             return transport;
         }
 
+        // GET COLOR
+        /// <summary>
+        /// Поиск по цвету
+        /// </summary>
+        /// <param name="color">Поиск по цвету</param>
+        /// <returns></returns>
         [HttpGet("cl/{color}")]
         public async Task<ActionResult<IEnumerable<Transport>>> GetTransportColor(string color)
         {
@@ -57,25 +75,27 @@ namespace Pr4SP.Controllers
 
             return transport;
         }
+        
 
-        [HttpGet("cy/{company}/{firstname}")]
-        public async Task<ActionResult<IEnumerable<Transport>>> GetTransportCompany(string company, string firstname)
+        /// <summary>
+        /// Поиск по компании
+        /// </summary>
+        /// <param name="company">Поиск по компании</param>
+        /// <returns></returns>
+        [HttpGet("cy/{company}")]
+        public async Task<ActionResult<IEnumerable<Transport>>> GetTransportCompany(string company)
         {
-            var transport = await _context.Transports.Where(cy => cy.Company == company && cy.User.FirstName == firstname).ToListAsync();
+            var transport = await _context.Transports.Where(cy => cy.Company == company).ToListAsync();
 
             return transport;
-        }
+        } 
 
-        // PUT: api/Transport/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransport(int id, Transport transport)
+        
+        
+        // PUT
+        [HttpPut]
+        public async Task<IActionResult> PutTransport([FromBody] Transport transport)
         {
-            if (id != transport.TransportId)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(transport).State = EntityState.Modified;
 
             try
@@ -84,7 +104,7 @@ namespace Pr4SP.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TransportExists(id))
+                if (!TransportExists(transport.TransportId))
                 {
                     return NotFound();
                 }
@@ -93,22 +113,23 @@ namespace Pr4SP.Controllers
                     throw;
                 }
             }
+            
+            
 
             return NoContent();
         }
 
-        // POST: api/Transport
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST
         [HttpPost]
-        public async Task<ActionResult<Transport>> PostTransport(Transport transport)
+        public async Task<ActionResult<Transport>> PostTransport([FromBody]Transport transport)
         {
-            _context.Transports.Add(transport);
+            await _context.Transports.AddAsync(transport);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTransport", new { id = transport.TransportId }, transport);
+            return CreatedAtAction(nameof(PostTransport), transport);
         }
 
-        // DELETE: api/Transport/5
+        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransport(int id)
         {
@@ -128,5 +149,7 @@ namespace Pr4SP.Controllers
         {
             return _context.Transports.Any(e => e.TransportId == id);
         }
+        
+        
     }
 }

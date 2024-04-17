@@ -15,5 +15,4 @@ public partial class User
 
     public DateOnly Birth { get; set; }
 
-    public virtual ICollection<Transport> Transports { get; set; } = new List<Transport>();
-    }
+}

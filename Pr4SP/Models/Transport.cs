@@ -14,6 +14,5 @@ public partial class Transport
     public string Color { get; set; } = null!;
 
     public string Company { get; set; } = null!;
-
-    public virtual User? User { get; set; }
+    
 }

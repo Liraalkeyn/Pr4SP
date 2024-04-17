@@ -1,0 +1,22 @@
+{
+  "runtime": "Net80",
+  "defaultVariables": null,
+  "documentGenerator": {
+    "aspNetCoreToOpenApi": {
+      "project": null,
+      "documentName": "v1",
+      "msBuildProjectExtensionsPath": null,
+      "configuration": null,
+      "runtime": null,
+      "targetFramework": null,
+      "noBuild": true,
+      "msBuildOutputPath": null,
+      "verbose": true,
+      "workingDirectory": null,
+      "aspNetCoreEnvironment": null,
+      "output": "swagger.json",
+      "newLineBehavior": "Auto"
+    }
+  },
+  "codeGenerators": {}
+}

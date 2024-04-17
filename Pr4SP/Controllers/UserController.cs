@@ -45,7 +45,7 @@ namespace Pr4SP.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, [FromBody] User user)
         {
             if (id != user.UserId)
             {
@@ -53,7 +53,7 @@ namespace Pr4SP.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
-
+            
             try
             {
                 await _context.SaveChangesAsync();
