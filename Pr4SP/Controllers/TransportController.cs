@@ -15,11 +15,11 @@ namespace Pr4SP.Controllers
     [ApiController]
     public class TransportController : ControllerBase
     {
-        private readonly Pr4SpContext _context;
+        private readonly IDbContextFactory<Pr4SpContext> _contextFactory;
 
-        public TransportController(Pr4SpContext context)
+        public TransportController(IDbContextFactory<Pr4SpContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         // GET: api/Transport
@@ -27,7 +27,9 @@ namespace Pr4SP.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Transport>>> GetTransports()
         {
-            return await _context.Transports.ToListAsync();
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            return await context.Transports.ToListAsync();
         }
         /// <summary>
         /// Поиск по айди
@@ -38,7 +40,9 @@ namespace Pr4SP.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Transport>> GetTransport(int id)
         {
-            var transport = await _context.Transports.FindAsync(id);
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            var transport = await context.Transports.FindAsync(id);
 
             if (transport == null)
             {
@@ -47,6 +51,8 @@ namespace Pr4SP.Controllers
 
             return transport;
         }
+        
+        
 
         // GET CODE
         /// <summary>
@@ -57,7 +63,9 @@ namespace Pr4SP.Controllers
         [HttpGet("cd/{code}")]
         public async Task<ActionResult<Transport>> GetTransportCode(int code)
         {
-            var transport = await _context.Transports.Where(c => c.Code == code).FirstAsync();
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            var transport = await context.Transports.Where(c => c.Code == code).FirstAsync();
 
             return transport;
         }
@@ -71,7 +79,9 @@ namespace Pr4SP.Controllers
         [HttpGet("cl/{color}")]
         public async Task<ActionResult<IEnumerable<Transport>>> GetTransportColor(string color)
         {
-            var transport = await _context.Transports.Where(cl => cl.Color == color).ToListAsync();
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            var transport = await context.Transports.Where(cl => cl.Color == color).ToListAsync();
 
             return transport;
         }
@@ -85,7 +95,9 @@ namespace Pr4SP.Controllers
         [HttpGet("cy/{company}")]
         public async Task<ActionResult<IEnumerable<Transport>>> GetTransportCompany(string company)
         {
-            var transport = await _context.Transports.Where(cy => cy.Company == company).ToListAsync();
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            var transport = await context.Transports.Where(cy => cy.Company == company).ToListAsync();
 
             return transport;
         } 
@@ -96,11 +108,13 @@ namespace Pr4SP.Controllers
         [HttpPut]
         public async Task<IActionResult> PutTransport([FromBody] Transport transport)
         {
-            _context.Entry(transport).State = EntityState.Modified;
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            context.Entry(transport).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -123,8 +137,10 @@ namespace Pr4SP.Controllers
         [HttpPost]
         public async Task<ActionResult<Transport>> PostTransport([FromBody]Transport transport)
         {
-            await _context.Transports.AddAsync(transport);
-            await _context.SaveChangesAsync();
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            await context.Transports.AddAsync(transport);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(PostTransport), transport);
         }
@@ -133,21 +149,25 @@ namespace Pr4SP.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransport(int id)
         {
-            var transport = await _context.Transports.FindAsync(id);
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            var transport = await context.Transports.FindAsync(id);
             if (transport == null)
             {
                 return NotFound();
             }
 
-            _context.Transports.Remove(transport);
-            await _context.SaveChangesAsync();
+            context.Transports.Remove(transport);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool TransportExists(int id)
         {
-            return _context.Transports.Any(e => e.TransportId == id);
+            Pr4SpContext context = _contextFactory.CreateDbContext();
+            
+            return context.Transports.Any(e => e.TransportId == id);
         }
         
         
